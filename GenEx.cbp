@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="GenEx" />
+		<Option pch_mode="2" />
+		<Option compiler="mingw-w64_gcc_compiler" />
+		<Build>
+			<Target title="Release">
+				<Option output="bin/Release/GenEx" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="mingw-w64_gcc_compiler" />
+				<Option projectCompilerOptionsRelation="0" />
+				<Option projectLinkerOptionsRelation="0" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++0x" />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add option="-O3" />
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add library="mingw32" />
+			<Add library="glew32" />
+			<Add library="SDL2main" />
+			<Add library="SDL2" />
+			<Add library="SDL2_mixer" />
+			<Add library="SDL2_ttf" />
+			<Add library="SDL2_gpu" />
+			<Add directory="lib" />
+		</Linker>
+		<Unit filename="assets.hpp" />
+		<Unit filename="base.hpp" />
+		<Unit filename="debug.hpp" />
+		<Unit filename="events.hpp" />
+		<Unit filename="genex.h" />
+		<Unit filename="graphics.hpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="math.hpp" />
+		<Unit filename="math/bezier.hpp" />
+		<Unit filename="math/vector.hpp" />
+		<Unit filename="time.hpp" />
+		<Unit filename="util.hpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
