@@ -14,72 +14,6 @@ bool handle_event(SDL_Event &event) {
 
     switch (event.type) {
     case SDL_WINDOWEVENT:
-        switch (event.window.type) {
-        // window is closed
-        case SDL_WINDOWEVENT_CLOSE:
-            break;
-
-        // gain mouse focus
-        case SDL_WINDOWEVENT_ENTER:
-            break;
-
-        // lose mouse focus
-        case SDL_WINDOWEVENT_LEAVE:
-            break;
-
-        // window hidden
-        case SDL_WINDOWEVENT_HIDDEN:
-            break;
-
-        // window shown
-        case SDL_WINDOWEVENT_SHOWN:
-            break;
-
-        // window exposed & should be redrawn
-        case SDL_WINDOWEVENT_EXPOSED:
-            break;
-
-        // window maximized
-        case SDL_WINDOWEVENT_MAXIMIZED:
-            break;
-
-        // window minimized
-        case SDL_WINDOWEVENT_MINIMIZED:
-            break;
-
-        // change in window's position
-        case SDL_WINDOWEVENT_MOVED:
-            break;
-
-        // window resized
-        case SDL_WINDOWEVENT_RESIZED:
-            break;
-
-        // size of the window has been manually changed
-        case SDL_WINDOWEVENT_SIZE_CHANGED:
-            break;
-
-        // window restored to normal size/position
-        case SDL_WINDOWEVENT_RESTORED:
-            break;
-
-        // gain keyboard focus
-        case SDL_WINDOWEVENT_FOCUS_GAINED:
-            break;
-
-        // lose keyboard focus
-        case SDL_WINDOWEVENT_FOCUS_LOST:
-            break;
-
-        // hit test
-        case SDL_WINDOWEVENT_HIT_TEST:
-            break;
-
-        // window is being granted keyboard focus
-        case SDL_WINDOWEVENT_TAKE_FOCUS:
-            break;
-
-        }
         break;
 
     case SDL_KEYDOWN:
@@ -91,27 +25,21 @@ bool handle_event(SDL_Event &event) {
                 running = !((SDL_GetModState() & KMOD_ALT) > 0) && (!SDL_GetHintBoolean(SDL_HINT_WINDOWS_NO_CLOSE_ON_ALT_F4, SDL_FALSE));
                 break;
         }
-//        Events::KeyDownEventHandler(event.key.keysym.sym, event.key.keysym.scancode, event.key.repeat);
         break;
 
     case SDL_KEYUP:
-//        Events::KeyUpEventHandler(event.key.keysym.sym, event.key.keysym.scancode, event.key.repeat);
         break;
 
     case SDL_TEXTINPUT:
-//        Events::TextInputEventHandler(event.text.text);
         break;
 
     case SDL_TEXTEDITING:
-//        Events::TextEditingEvent(event.edit.text, event.edit.start, event.edit.length);
         break;
 
     case SDL_MOUSEBUTTONDOWN:
-//        Events::MouseButtonDownEventHandler(event.button.x, event.button.y, event.button.button, event.button.clicks, event.button.which);
         break;
 
     case SDL_MOUSEBUTTONUP:
-//        Events::MouseButtonUpEventHandler(event.button.x, event.button.y, event.button.button, event.button.clicks, event.button.which);
         break;
 
     case SDL_MOUSEMOTION:
@@ -120,21 +48,17 @@ bool handle_event(SDL_Event &event) {
         btns[2] = event.motion.state & SDL_BUTTON_RIGHT;
         btns[3] = event.motion.state & SDL_BUTTON_X1MASK;
         btns[4] = event.motion.state & SDL_BUTTON_X2MASK;
-//        Events::MouseMotionEventHandler(event.motion.x, event.motion.y, event.motion.xrel,  event.motion.yrel, btns, event.motion.which);
         break;
 
     case SDL_MOUSEWHEEL:
-//        Events::MouseWheelEventHandler(event.wheel.direction, event.wheel.x, event.wheel.y, event.wheel.which);
         break;
 
     case SDL_CLIPBOARDUPDATE:
         cliptext = SDL_GetClipboardText();
-//        Events::ClipboardUpdateEventHandler(txt);
         break;
 
 
     case SDL_USEREVENT:
-//        Events::UserEventHandler(event.user.code, event.user.data1, event.user.data2);
         break;
 
     default:

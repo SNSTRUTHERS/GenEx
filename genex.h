@@ -4,4 +4,5 @@
 #include "math.hpp"     // Math library
 #include "debug.hpp"    // Debugging-related string printout functions
 #include "events.hpp"   // Default event handlers
+#include "object.hpp"   // Base object implementation
 #include "graphics.hpp" // Graphics display library & primitives

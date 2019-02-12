@@ -29,7 +29,7 @@ namespace GenEx {
     static const Uint8  VERSION_STATE = 0;
     static const Uint32 VERSION_MAJOR = 0;
     static const Uint32 VERSION_MINOR = 0;
-    static const Uint32 VERSION_PATCH = 0;
+    static const Uint32 VERSION_PATCH = 1;
     static const std::string EX_NAME = "General Executor"; // The program name
 
     /** \brief The names of those who have contributed to the development of GenEx
@@ -114,6 +114,8 @@ namespace GenEx {
      *
      */
     std::string GetWorkingDir() { return WORKING_DIR; }
+
+    class Object;
 }
 
 #endif // BASE_HPP

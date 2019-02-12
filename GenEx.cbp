@@ -24,19 +24,20 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++0x" />
+			<Add option="-m64" />
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
 			<Add option="-O3" />
 			<Add option="-static-libstdc++" />
 			<Add option="-static-libgcc" />
+			<Add option="-m64" />
 			<Add library="mingw32" />
 			<Add library="glew32" />
 			<Add library="SDL2main" />
 			<Add library="SDL2" />
-			<Add library="SDL2_mixer" />
 			<Add library="SDL2_ttf" />
-			<Add library="SDL2_gpu" />
+			<Add library="SDL2_image" />
 			<Add directory="lib" />
 		</Linker>
 		<Unit filename="assets.hpp" />
@@ -49,6 +50,7 @@
 		<Unit filename="math.hpp" />
 		<Unit filename="math/bezier.hpp" />
 		<Unit filename="math/vector.hpp" />
+		<Unit filename="object.hpp" />
 		<Unit filename="time.hpp" />
 		<Unit filename="util.hpp" />
 		<Extensions>
