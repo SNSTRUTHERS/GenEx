@@ -285,7 +285,7 @@ namespace GenEx {
              *
              */
             Vector<N,T> operator+ (const Vector<N,T> &other) {
-                Vector<N, T> ret_val;
+                Vector<N, T> ret_val(*this);
                 return ret_val += other;
             }
 
@@ -297,7 +297,7 @@ namespace GenEx {
              *
              */
             Vector<N,T> operator+ (Vector<N,T> &&other) {
-                Vector<N, T> ret_val;
+                Vector<N, T> ret_val(*this);
                 return ret_val += other;
             }
 
@@ -309,7 +309,7 @@ namespace GenEx {
              *
              */
             Vector<N,T> operator- (const Vector<N,T> &other) {
-                Vector<N, T> ret_val;
+                Vector<N, T> ret_val(*this);
                 return ret_val -= other;
             }
 
@@ -321,7 +321,7 @@ namespace GenEx {
              *
              */
             Vector<N,T> operator- (Vector<N,T> &&other) {
-                Vector<N, T> ret_val;
+                Vector<N, T> ret_val(*this);
                 return ret_val -= other;
             }
 
@@ -376,7 +376,7 @@ namespace GenEx {
                 if (absv(magnitude()) < FLT_EPSILON ) {
                     return Vector<N,T>();
                 }
-                *this /= magnitude;
+                *this /= magnitude();
                 return *this;
             }
 
@@ -386,10 +386,28 @@ namespace GenEx {
              * \return T Distance between this vector and the other
              *
              */
-            T distance(Vector<N,T> &other) {
-                Vector<N,T> n(*this);
-                n -= other;
-                return n.magnitude();
+            T distance(const Vector<N,T> &other) {
+                if (&other != this) {
+                    Vector<N,T> n(*this);
+                    n -= other;
+                    return n.magnitude();
+                }
+                return 0;
+            }
+
+            /** \brief Returns the distance between two vectors.
+             *
+             * \param Vector <u>other</u>: the vector you're trying to find the distance to
+             * \return T Distance between this vector and the other
+             *
+             */
+            T distance(Vector<N,T> &&other) {
+                if (&other != this) {
+                    Vector<N,T> n(*this);
+                    n -= other;
+                    return n.magnitude();
+                }
+                return 0;
             }
 
             /** \brief Gets the size of the vector.
