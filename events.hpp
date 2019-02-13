@@ -676,48 +676,248 @@ namespace GenEx {
         /** \brief A struct containing event handlers for use by GenEx Objects
          */
         struct EventHandlers {
+            /** Initialization event
+             * \param GenEx::object *<u>obj</u>
+             */
             InitEvent    init;
+            /** Destroy event
+             * \param GenEx::object *<u>obj</u>
+             */
             DestroyEvent destroy;
+            /** Update event
+             * \param GenEx::Object *<u>obj</u>
+             * \param double elapsed
+             */
             UpdateEvent  update;
+            /** Destroy event
+             * \param GenEx::object *<u>obj</u>
+             * \param Uint8 <u>event</u>
+             * \param Sint32 <u>data1</u>
+             * \param Sint32 <u>data2</u>
+             */
             WindowEvent      windowevent;
+            /** Target reset event
+             * \param GenEx::Object *<u>obj</u>
+             * \param double elapsed
+             */
             TargetResetEvent targetreset;
 
+            /** Key down event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_Keycode <u>key</u>
+             * \param SDL_Scancode <u>scancode</u>
+             * \param Uint8 <u>repeat</u>
+             */
             KeyDownEvent     keydown;
+            /** Key up event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_Keycode <u>key</u>
+             * \param SDL_Scancode <u>scancode</u>
+             * \param Uint8 <u>repeat</u>
+             */
             KeyUpEvent       keyup;
+            /** Text editing event
+             * \param GenEx::Object *<u>obj</u>
+             * \param char <u>text</u>[32]
+             * \param Sint32 <u>start</u>
+             * \param Sint32 <u>length</u>
+             */
             TextEditingEvent textediting;
+            /** Text input event
+             * \param GenEx::Object *<u>obj</u>
+             * \param char <u>text</u>[32]
+             */
             TextInputEvent   textinput;
 
+            /** Mouse button down event
+             * \param GenEx::Object *<u>obj</u>
+             * \param Sint32 <u>x</u>
+             * \param Sint32 <u>y</u>
+             * \param Uint8 <u>button</u>
+             * \param Uint8 <u>clicks</u>
+             * \param Uint32 <u>which</u>
+             */
             MouseButtonDownEvent mousedown;
+            /** Mouse button up event
+             * \param GenEx::Object *<u>obj</u>
+             * \param Sint32 <u>x</u>
+             * \param Sint32 <u>y</u>
+             * \param Uint8 <u>button</u>
+             * \param Uint8 <u>clicks</u>
+             * \param Uint32 <u>which</u>
+             */
             MouseButtonUpEvent   mouseup;
+            /** Mouse motion event
+             * \param GenEx::Object *<u>obj</u>
+             * \param Sint32 <u>x</u>
+             * \param Sint32 <u>y</u>
+             * \param Sint32 <u>xrel</u>
+             * \param Sint32 <u>yrel</u>
+             * \param bool <u>buttons</u>[5]
+             * \param Uint32 <u>which</u>
+             */
             MouseMotionEvent     mousemotion;
+            /** Mouse wheel event
+             * \param GenEx::Object *<u>obj</u>
+             * \param bool <u>flipped</u>
+             * \param Sint32 <u>x</u>
+             * \param Sint32 <u>y</u>
+             * \param Uint32 <u>which</u>
+             */
             MouseWheelEvent      mousewheel;
 
+            /** Clipboard update event
+             * \param GenEx::Object *<u>obj</u>
+             * \param char text[]
+             */
             ClipboardUpdateEvent clipboardupdate;
+            /** Drop file event
+             * \param GenEx::Object *<u>obj</u>
+             * \param std::string filename
+             */
             DropFileEvent        filedrop;
+            /** Drop text event
+             * \param GenEx::Object *<u>obj</u>
+             * \param char text[]
+             */
             DropTextEvent        textdrop;
+            /** Drop begin event
+             * \param GenEx::Object *<u>obj</u>
+             */
             DropBeginEvent       begindrop;
+            /** Drop complete event
+             * \param GenEx::Object *<u>obj</u>
+             */
             DropCompleteEvent    completedrop;
 
+            /** Joystick axis motion event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>joystick_id</u>
+             * \param Uint8 <u>axis</u>
+             * \param Sint16 <u>value</u>
+             */
             JoystickAxisEvent       jaxis;
+            /** Joystick trackball motion event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>joystick_id</u>
+             * \param Uint8 <u>ball</u>
+             * \param Sint16 <u>x</u>
+             * \param Sint16 <u>y</u>
+             */
             JoystickTrackballEvent  jball;
+            /** Joystick hat motion event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>joystick_id</u>
+             * \param Uint8 <u>hat</u>
+             * \param Uint8 <u>value</u>
+             */
             JoystickHatEvent        jhat;
+            /** Joystick button down event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>joystick_id</u>
+             * \param Uint8 <u>button</u>
+             */
             JoystickButtonDownEvent jbtndown;
+            /** Joystick button up event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>joystick_id</u>
+             * \param Uint8 <u>button</u>
+             */
             JoystickButtonUpEvent   jbtnup;
 
+            /** Controller axis motion event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>controller_id</u>
+             * \param Uint8 <u>axis</u>
+             * \param Sint16 <u>value</u>
+             */
             ControllerAxisEvent       caxis;
+            /** Controller button down event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>controller_id</u>
+             * \param Uint8 <u>button</u>
+             */
             ControllerButtonDownEvent cbtndown;
+            /** Controller button up event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_JoystickID <u>controller_id</u>
+             * \param Uint8 <u>button</u>
+             */
             ControllerButtonUpEvent   cbtnup;
 
+            /** Finger down event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_TouchID <u>touch_id</u>
+             * \param SDL_FingerID <u>finger_id</u>
+             * \param float <u>x</u>
+             * \param float <u>y</u>
+             * \param float <u>pressure</u>
+             */
             FingerDownEvent     fingerdown;
+            /** Finger up event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_TouchID <u>touch_id</u>
+             * \param SDL_FingerID <u>finger_id</u>
+             * \param float <u>x</u>
+             * \param float <u>y</u>
+             * \param float <u>pressure</u>
+             */
             FingerUpEvent       fingerup;
+            /** Finger motion event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_TouchID <u>touch_id</u>
+             * \param SDL_FingerID <u>finger_id</u>
+             * \param float <u>x</u>
+             * \param float <u>y</u>
+             * \param float <u>dx</u>
+             * \param float <u>dy</u>
+             * \param float <u>pressure</u>
+             */
             FingerMotionEvent   fingermotion;
+            /** Gesture record event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_TouchID <u>touch_id</u>
+             * \param SDL_GestureID <u>gesture_id</u>
+             * \param Uint32 <u>num_fingers</u>
+             * \param float <u>x</u>
+             * \param float <u>y</u>
+             */
             RecordGestureEvent  gesturerecord;
+            /** Gesture perform event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_TouchID <u>touch_id</u>
+             * \param SDL_GestureID <u>gesture_id</u>
+             * \param Uint32 <u>num_fingers</u>
+             * \param float <u>x</u>
+             * \param float <u>y</u>
+             * \param float <u>error</u>
+             */
             PerformGestureEvent gestureperform;
+            /** Multi-gesture event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_TouchID <u>touch_id</u>
+             * \param Uint16 <u>num_fingers</u>
+             * \param float <u>x</u>
+             * \param float <u>y</u>
+             * \param float <u>d_theta</u>
+             * \param float <u>d_dist</u>
+             */
             MultiGestureEvent   multigesture;
 
+            /** User event
+             * \param GenEx::Object *<u>obj</u>
+             * \param Sint32 <u>code</u>
+             * \param void *<u>data1</u>
+             * \param void *<u>data2</u>
+             */
             UserEvent userevent;
         };
 
+        /** \brief Generates the default event handlers structure for new GenEx Objects.
+         *
+         * \return EventHandlers Struct containing the default GenEx event handlers
+         *
+         */
         EventHandlers GenerateEventHandlerStruct() {
             return {
               InitEventHandler,

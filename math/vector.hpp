@@ -5,6 +5,9 @@
 
 namespace GenEx {
     namespace Math {
+
+// --- VECTOR CLASS -------------------------------------------------------------------------------
+
         /** \brief A struct representing a mathematical vector
          *
          * \param unsigned int <u>N</u>: number of elements in this vector
@@ -77,10 +80,7 @@ namespace GenEx {
              *
              */
             Vector(const Vector<N,T> &other) {
-                T *data = other.get_data();
-                for (unsigned int i = 0; i < N; i++)
-                    items[i] = data[i];
-                delete[] data;
+                memcpy(items, other.items, sizeof(items));
             }
 
             /** \brief Copy constructor for Vector.
@@ -95,17 +95,14 @@ namespace GenEx {
                 delete[] data;
             }
 
-// --- OPERATORS ----------------------------------------------------------------------------------
+// ------ OPERATORS -------------------------------------------------------------------------------
 
             /** \brief Assignment operator for Vector.
              * \param Vector <u>other</u>: another vector
              *
              */
             Vector<N,T> &operator= (const Vector<N,T> &other) {
-                T *data = other.get_data();
-                for (unsigned int i = 0; i < N; i++)
-                    items[i] = data[i];
-                delete[] data;
+                memcpy(items, other.items, sizeof(items));
                 return *this;
             }
 
@@ -350,7 +347,7 @@ namespace GenEx {
                 return ret_val;
             }
 
-// --- FUNCTIONS ----------------------------------------------------------------------------------
+// ------ FUNCTIONS -------------------------------------------------------------------------------
 
             /** \brief Returns the square of the values in this vector.
              *

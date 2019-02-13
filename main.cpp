@@ -152,6 +152,15 @@ int main(int argc, char *argv[]) {
     }
     std::cout << Debug::GetVersionString() << '\n';
 
+    /*auto objptr = std::make_shared<Object>();
+    Layer *layer1 = new Layer(objptr, std::make_shared<Object>());
+    std::cout << "Number of objects: " << layer1->num_objects() << '\n';
+    layer1->remove_object(1);
+    std::cout << "Number of objects: " << layer1->num_objects() << '\n';
+    layer1->remove_object(0);
+    std::cout << "Number of objects: " << layer1->num_objects() << '\n';
+    delete layer1;*/
+
     SDL_Window *win = SDL_CreateWindow("Title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                        1280, 720, WINFLAGS);
     win_id = SDL_GetWindowID(win);

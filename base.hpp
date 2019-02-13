@@ -12,10 +12,13 @@
 #include <exception>
 #include <chrono>
 #include <algorithm>
+#include <utility>
 #include <initializer_list>
 #include <unordered_map>
 #include <exception>
 #include <tuple>
+#include <regex>
+#include <memory>
 
 #define SDL_main main
 #include "SDL.h"
@@ -29,7 +32,7 @@ namespace GenEx {
     static const Uint8  VERSION_STATE = 0;
     static const Uint32 VERSION_MAJOR = 0;
     static const Uint32 VERSION_MINOR = 0;
-    static const Uint32 VERSION_PATCH = 1;
+    static const Uint32 VERSION_PATCH = 2;
     static const std::string EX_NAME = "General Executor"; // The program name
 
     /** \brief The names of those who have contributed to the development of GenEx

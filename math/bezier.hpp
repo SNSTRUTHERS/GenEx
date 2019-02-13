@@ -50,28 +50,29 @@ namespace GenEx {
 
             /** \brief Copy constructor for a new Bezier curve.
              *
-             * \param Bezier &<u>other</u> The Bezier curve to copy
+             * \param Bezier &<u>other</u>: The Bezier curve to copy
              *
              */
-            Bezier(const Bezier<T> &other) {
-                p0 = other.p0;
-                c0 = other.c0;
-                c1 = other.c1;
-                p1 = other.p1;
-            }
+            Bezier(const Bezier<T> &other) : p0(other.p0),
+                                             c0(other.c0),
+                                             c1(other.c1),
+                                             p1(other.p1) { }
 
-            /** \brief Copy constructor for a new Bezier curve.
+            /** \brief Move constructor for a new Bezier curve.
              *
-             * \param Bezier &<u>other</u> The Bezier curve to copy
+             * \param Bezier &<u>other</u>: The Bezier curve to move
              *
              */
-            Bezier(Bezier<T> &&other) {
-                p0 = other.p0;
-                c0 = other.c0;
-                c1 = other.c1;
-                p1 = other.p1;
-            }
+            Bezier(Bezier<T> &&other) : p0(std::move(other.p0)),
+                                        c0(std::move(other.c0)),
+                                        c1(std::move(other.c1)),
+                                        p1(std::move(other.p1)) { }
 
+            /** \brief Copy assignment for Bezier
+             *
+             * \param Bezier &<u>other</u>: The Bezier curve to copy
+             *
+             */
             Bezier<T> &operator= (const Bezier<T> &other) {
                 p0 = other.p0;
                 c0 = other.c0;
@@ -79,11 +80,17 @@ namespace GenEx {
                 p1 = other.p1;
                 return *this;
             }
+
+            /** \brief Move assignment for Bezier
+             *
+             * \param Bezier &&<u>other</u>: The Bezier curve to move
+             *
+             */
             Bezier<T> &operator= (Bezier<T> &&other) {
-                p0 = other.p0;
-                c0 = other.c0;
-                c1 = other.c1;
-                p1 = other.p1;
+                p0 = std::move(other.p0);
+                c0 = std::move(other.c0);
+                c1 = std::move(other.c1);
+                p1 = std::move(other.p1);
                 return *this;
             }
 
@@ -108,6 +115,11 @@ namespace GenEx {
                 return pt;
             }
 
+            /** \brief Returns how flat this Bezier curve is
+             *
+             * \return T How flat this curve is
+             *
+             */
             T flatness() {
                 T ux = SDL_pow(3*c0[0] - 2*p0[0] - p1[0], 2);
                 T uy = SDL_pow(3*c0[1] - 2*p0[1] - p1[1], 2);
