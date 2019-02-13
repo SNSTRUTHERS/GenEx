@@ -32,7 +32,7 @@ namespace GenEx {
     static const Uint8  VERSION_STATE = 0;
     static const Uint32 VERSION_MAJOR = 0;
     static const Uint32 VERSION_MINOR = 0;
-    static const Uint32 VERSION_PATCH = 2;
+    static const Uint32 VERSION_PATCH = 3;
     static const std::string EX_NAME = "General Executor"; // The program name
 
     /** \brief The names of those who have contributed to the development of GenEx

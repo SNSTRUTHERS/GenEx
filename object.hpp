@@ -629,11 +629,22 @@ namespace GenEx {
 
         /** \brief Constructs a new layer with the provided Objects
          *
-         * \param ... : Any number of Object pointers of shared_ptrs to Objects
+         * \param ... : Any number of Object pointers or shared_ptrs to Objects
          *
          */
         template <typename ...PTRS>
         Layer(PTRS... objs) : Object() {
+            add_objects(objs...);
+        }
+
+        /** \brief Constructs a new layer with the given event handlers & Objects
+         *
+         * \param Events::EventHandlers <u>evt_handlers</u>: Event handlers for this layer to use
+         * \param ... : Any number of Object pointers or shared_ptrs to Objects
+         *
+         */
+        template <typename ...PTRS>
+        Layer(Events::EventHandlers evt_handlers, PTRS... objs) : Object(evt_handlers) {
             add_objects(objs...);
         }
 
