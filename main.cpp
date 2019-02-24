@@ -1,148 +1,104 @@
+/**
+ * \file main.cpp
+ *
+ * \author Simon Struthers <snstruthers@gmail.com>
+ * \version pre_dev v0.1.0
+ *
+ * \section LICENSE
+ * GenEx (short for General Executor) - window manager and runtime environment.
+ * Copyright (C) 2019 | The GenEx Project
+ *
+ * This file is part of GenEx.
+ *
+ * GenEx is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License version 2 as published by the Free Software Foundation.
+ *
+ * GenEx is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You should have received a copy of the GNU General Public License version 2 along with GenEx.
+ * If not, see http://www.gnu.org/licenses.
+ *
+ * \section DESCRIPTION
+ * The main GenEx executable code.
+ *
+ */
+
 #include "genex.h"
 
 using namespace GenEx;
 
-static double FPS;
-static Uint32 win_id;
-
-// event handling
-bool handle_event(SDL_Event &event) {
-    bool running = true;
-
-    char *cliptext = new char[32];
-    bool btns[5];
-
-    switch (event.type) {
-    case SDL_WINDOWEVENT:
-        break;
-
-    case SDL_KEYDOWN:
-        switch (event.key.keysym.sym) {
-            case SDLK_F3:
-                DEBUGGING = DEBUGGING ? 0 : ( (SDL_GetModState() & KMOD_CTRL) ? 2: 1 );
-                break;
-            case SDLK_F4:
-                running = !((SDL_GetModState() & KMOD_ALT) > 0) && (!SDL_GetHintBoolean(SDL_HINT_WINDOWS_NO_CLOSE_ON_ALT_F4, SDL_FALSE));
-                break;
-        }
-        break;
-
-    case SDL_KEYUP:
-        break;
-
-    case SDL_TEXTINPUT:
-        break;
-
-    case SDL_TEXTEDITING:
-        break;
-
-    case SDL_MOUSEBUTTONDOWN:
-        break;
-
-    case SDL_MOUSEBUTTONUP:
-        break;
-
-    case SDL_MOUSEMOTION:
-        btns[0] = event.motion.state & SDL_BUTTON_LMASK;
-        btns[1] = event.motion.state & SDL_BUTTON_MMASK;
-        btns[2] = event.motion.state & SDL_BUTTON_RIGHT;
-        btns[3] = event.motion.state & SDL_BUTTON_X1MASK;
-        btns[4] = event.motion.state & SDL_BUTTON_X2MASK;
-        break;
-
-    case SDL_MOUSEWHEEL:
-        break;
-
-    case SDL_CLIPBOARDUPDATE:
-        cliptext = SDL_GetClipboardText();
-        break;
-
-
-    case SDL_USEREVENT:
-        break;
-
-    default:
-        break;
-    }
-
-    delete[] cliptext;
-    return running;
-}
-
-// update
-bool update(double elapsed) {
-    return true;
-}
-
-// draw function
-void draw(SDL_Renderer *renderer) {
-    Math::BezierCurve c{ { 300.0, 300.0 }, { 350.0, 250.0 }, { 700.0, 450.0 }, { 550.0, 440.0 } };
-    static Math::BezierPath p( { std::make_tuple( c, 0 ) } );
-    Graphics::RenderPath(p, renderer, { 255, 255, 255, 255 });
-}
-
-// debug screen
-void draw_debug(SDL_Renderer *renderer) {
-    std::stringstream sst;
-    sst << "FPS: " << roundf(FPS* 100)/100;
-
-    SDL_Surface *fpssurf = TTF_RenderText_Blended(DEBUG_FONT, sst.str().c_str(), { 0, 0, 0, 255 });
-    Graphics::RenderImg(fpssurf, renderer, 0.0f, DEBUG_FONT_SIZE / 32.0f, nullptr,
-                        0.0f, 0.0f, 0.0f, 0.0f);
-    SDL_FreeSurface(fpssurf);
-    fpssurf = TTF_RenderText_Blended(DEBUG_FONT, sst.str().c_str(), { 255, 255, 255, 255 });
-    Graphics::RenderImg(fpssurf, renderer, 0.0f, 0.0f, nullptr, 0.0f, 0.0f, 0.0f, 0.0f);
-    SDL_FreeSurface(fpssurf);
-}
-
-// main loop
-void main_loop(SDL_Renderer *renderer) {
-    bool running = true;
+/** \brief Handles event polling.
+ *
+ * \param Layer &<u>winlayer</u>: The top level layer
+ * \param std::unordered_map &<u>windowthreads</u>: A map containing the window thread data
+ * \param std::vector &<u>events</u>: A vector in which to place the events
+ *
+ */
+void poll_events(Layer &winlayer,
+                 std::unordered_map<Uint64, Graphics::WindowThreadData*> &windowthreads,
+                 std::vector<SDL_Event> &events) {
     SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == GENEX_CREATEWINDOWEVENT) {
+            Graphics::WindowData  *windt        = (Graphics::WindowData*)  event.user.data1;
+            Events::EventHandlers *evt_handlers = (Events::EventHandlers*) event.user.data2;
+            Graphics::WindowThreadData *wd = Graphics::CreateWindow(*windt, *evt_handlers);
 
-    std::vector<double> fps_buffer;
-    double fps_counter = 0.0;
+            delete windt;
+            delete evt_handlers;
 
-    double elapsed, prev;
-    prev = Time::GetSecs();
-    FPS = 0.0;
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    running = false;
-                    break;
-                default:
-                    running = handle_event(event);
-                    break;
-            }
+            windowthreads[wd->window->get_id()] = wd;
+            winlayer.add_object(std::shared_ptr<Object>(wd->window),
+                                std::string("win") + std::to_string(wd->window->get_id()));
+            continue;
         }
-
-        SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
-        SDL_RenderClear(renderer);
-        draw(renderer);
-        if (DEBUGGING)
-            draw_debug(renderer);
-        SDL_RenderPresent(renderer);
-
-        elapsed = Time::GetSecs() - prev;
-        running &= update(elapsed);
-        prev = Time::GetSecs();
-
-        fps_counter += elapsed;
-
-        if (fps_counter > 0.125 && fps_buffer.size() > 10) {
-            FPS = 0.0;
-            fps_counter = 0;
-            for (auto &d : fps_buffer) FPS += d;
-            FPS /= fps_buffer.size();
-            fps_buffer.clear();
-        }
-        fps_buffer.push_back(1.0 / ( elapsed + 0.00001 ));
-
-        std::stringstream sst;
-        sst << "FPS: " << roundf(*(fps_buffer.end()-1) * 100)/100;
+        events.emplace_back(event);
     }
+}
+
+/** \brief Pushes an event to create a new GenEx window.
+ *
+ * \param Graphics::WindowData <u>windt</u>: Data used to construct the window
+ * \param Events::EventHandlers <u>evt_handlers</u>: Event handlers for the window to use
+ *
+ */
+void addwin(Graphics::WindowData &windt, Events::EventHandlers &evt_handlers) {
+    SDL_Event evt;
+    SDL_zero(evt);
+
+    Graphics::WindowData *wd = new Graphics::WindowData();
+    *wd = windt;
+    Events::EventHandlers *evh = new Events::EventHandlers();
+    *evh = evt_handlers;
+
+    evt.type = GENEX_CREATEWINDOWEVENT;
+    evt.user.data1 = (void*)(wd);
+    evt.user.data2 = (void*)(evh);
+
+    SDL_PushEvent(&evt);
+}
+
+/** \brief Pushes an event to create a new GenEx window.
+ *
+ * \param std::string <u>title</u>: The window title
+ * \param int <u>x</u>: The window's x-position
+ * \param int <u>y</u>: The window's y-position
+ * \param int <u>w</u>: The window's width
+ * \param int <u>h</u>: The window's height
+ * \param Uint32 <u><i>winflags</i></u>: Flags for setting up the window
+ * \param Uint32 <u><i>renflags</i></u>: Flags for setting up the window renderer
+ * \param Events::EventHandlers <u><i>evt_handlers</i></u>: Event handlers for the window to use
+ *
+ */
+void addwin(std::string title, int x, int y, int w, int h,
+            Uint32 winflags = DEFAULT_WINFLAGS,
+            Uint32 renflags = DEFAULT_RENFLAGS,
+            double framerate = Graphics::DEFAULT_FRAMERATE,
+            Events::EventHandlers evt_handlers = Events::GenerateEventHandlerStruct()) {
+    Graphics::WindowData windt = {title, x, y, w, h, winflags, renflags, framerate};
+    addwin(windt, evt_handlers);
 }
 
 int main(int argc, char *argv[]) {
@@ -152,38 +108,89 @@ int main(int argc, char *argv[]) {
     }
     std::cout << Debug::GetVersionString() << '\n';
 
-    /*auto objptr = std::make_shared<Object>();
-    Layer *layer1 = new Layer(objptr, std::make_shared<Object>());
-    std::cout << "Number of objects: " << layer1->num_objects() << '\n';
-    layer1->remove_object(1);
-    std::cout << "Number of objects: " << layer1->num_objects() << '\n';
-    layer1->remove_object(0);
-    std::cout << "Number of objects: " << layer1->num_objects() << '\n';
-    delete layer1;*/
+    // Things to keep track of top-level objects
+    Layer winlayer; // PARENT WINDOW LAYER
+    std::unordered_map<Uint64, Graphics::WindowThreadData*> windowthreads;
+    std::unordered_map<Uint64, double> windowtimes;
 
-    SDL_Window *win = SDL_CreateWindow("Title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                       1280, 720, WINFLAGS);
-    win_id = SDL_GetWindowID(win);
-    if (win == nullptr) {
-        TTF_Quit();
-        SDL_Quit();
-        return -2;
-    }
-    SDL_Renderer *ren = SDL_CreateRenderer(win, -1, RENFLAGS);
-    if (ren == nullptr) {
-        SDL_DestroyWindow(win);
-        TTF_Quit();
-        SDL_Quit();
-        return -2;
+    {
+        addwin("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720);
     }
 
-    main_loop(ren);
+    bool quitflag = false;
+    std::vector<SDL_Event> events;
+    while (!quitflag) {
+        poll_events(winlayer, windowthreads, events);
 
-    SDL_DestroyRenderer(ren);
-    SDL_DestroyWindow(win);
+        // loop through all top-level objects
+        for (auto pr = winlayer.begin(); pr != winlayer.end(); pr++) {
+            std::shared_ptr<GenEx::Object> obj = pr->second;
+            Uint64 obj_id = obj->get_id();
 
-    TTF_CloseFont(DEBUG_FONT);
-    TTF_Quit();
+            // handle windows
+            if (windowthreads.find(obj_id) != windowthreads.end()) {
+                if (windowthreads[obj_id]->complete) {
+                    SDL_DestroyCond(windowthreads[obj_id]->c);
+                    SDL_DestroyMutex(windowthreads[obj_id]->m);
+                    delete windowthreads[obj_id];
+
+                    windowthreads.erase(obj_id);
+                    obj->destroy();
+                    winlayer.remove_object(obj);
+                    break;
+                }
+                else {
+                    bool evt_flag = true;
+                    if (windowtimes.find(obj_id) != windowtimes.end() &&
+                            windowthreads[obj_id]->framerate > 0.0) {
+                        evt_flag = (Time::GetTime() - windowtimes[obj_id]) >
+                                       (1.0 / windowthreads[obj_id]->framerate);
+                    }
+
+                    if (evt_flag) {
+                        Graphics::Window *win = ((Graphics::Window*)(obj.get()));
+                        Uint32 win_id = win->get_window_id();
+
+                        SDL_LockMutex(windowthreads[obj_id]->m);
+
+                        for (auto &evt : events) {
+                            if (evt.type == SDL_QUIT) {
+                                quitflag = true;
+                                break;
+                            }
+
+                            if ((evt.type == SDL_WINDOWEVENT     &&
+                                    win_id == evt.window.windowID) ||
+                                (evt.type == SDL_MOUSEBUTTONDOWN &&
+                                    win_id == evt.button.windowID) ||
+                                (evt.type == SDL_MOUSEBUTTONUP   &&
+                                    win_id == evt.button.windowID) ||
+                                (evt.type == SDL_MOUSEMOTION     &&
+                                    win_id == evt.motion.windowID) ||
+                                (evt.type == SDL_MOUSEWHEEL      &&
+                                    win_id == evt.wheel.windowID)  ||
+                                 evt.type != SDL_WINDOWEVENT) {
+                                windowthreads[obj_id]->event_buffer.emplace_back(evt);
+                            }
+                        }
+
+                        SDL_CondSignal( windowthreads[obj_id]->c);
+                        SDL_UnlockMutex(windowthreads[obj_id]->m);
+
+                        windowtimes[obj_id] = Time::GetTime();
+                    }
+                }
+            }
+        }
+
+        events.clear();
+
+        if (winlayer.num_objects() < 1)
+            quitflag = true;
+    }
+
+    winlayer.destroy();
+
     SDL_Quit();
     return 0;
 }

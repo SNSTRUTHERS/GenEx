@@ -1,3 +1,30 @@
+/**
+ * \file math/bezier.hpp
+ *
+ * \author Simon Struthers <snstruthers@gmail.com>
+ * \version pre_dev v0.1.0
+ *
+ * \section LICENSE
+ * GenEx (short for General Executor) - window manager and runtime environment.
+ * Copyright (C) 2019 | The GenEx Project
+ *
+ * This file is part of GenEx.
+ *
+ * GenEx is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License version 2 as published by the Free Software Foundation.
+ *
+ * GenEx is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You should have received a copy of the GNU General Public License version 2 along with GenEx.
+ * If not, see http://www.gnu.org/licenses.
+ *
+ * \section DESCRIPTION
+ * The header file defining Bezier curve & path objects.
+ *
+ */
+
 #ifndef MATH_BEZIER_HPP
 #define MATH_BEZIER_HPP
 
@@ -10,11 +37,11 @@ namespace GenEx {
 
         /** \brief Default number of samples used when drawing this path
          */
-        static const unsigned int DEFAULT_SAMPLES = 30;
+        static constexpr unsigned int DEFAULT_SAMPLES = 30;
 
         /** \brief 0 samples = use recurse sampling method
          */
-        static const unsigned int RECURSE_SAMPLING = 0;
+        static constexpr unsigned int RECURSE_SAMPLING = 0;
 
 // --- BEZIER CURVE CLASS -------------------------------------------------------------------------
 
@@ -35,7 +62,7 @@ namespace GenEx {
 
             /** \brief Constructs an empty bezier
              */
-            Bezier() { }
+            Bezier();
 
             /** \brief Constructs a new Bezier curve from four 2D Vectors.
              *
@@ -45,54 +72,35 @@ namespace GenEx {
              * \param Vector <u>_p1</u>: Ending point
              *
              */
-            Bezier(VEC _p0, VEC _c0, VEC _c1, VEC _p1) : p0(_p0), c0(_c0), c1(_c1), p1(_p1)
-            { }
+            Bezier(VEC _p0, VEC _c0, VEC _c1, VEC _p1);
 
             /** \brief Copy constructor for a new Bezier curve.
              *
              * \param Bezier &<u>other</u>: The Bezier curve to copy
              *
              */
-            Bezier(const Bezier<T> &other) : p0(other.p0),
-                                             c0(other.c0),
-                                             c1(other.c1),
-                                             p1(other.p1) { }
+            Bezier(const Bezier<T> &other);
 
             /** \brief Move constructor for a new Bezier curve.
              *
              * \param Bezier &<u>other</u>: The Bezier curve to move
              *
              */
-            Bezier(Bezier<T> &&other) : p0(std::move(other.p0)),
-                                        c0(std::move(other.c0)),
-                                        c1(std::move(other.c1)),
-                                        p1(std::move(other.p1)) { }
+            Bezier(Bezier<T> &&other);
 
             /** \brief Copy assignment for Bezier
              *
              * \param Bezier &<u>other</u>: The Bezier curve to copy
              *
              */
-            Bezier<T> &operator= (const Bezier<T> &other) {
-                p0 = other.p0;
-                c0 = other.c0;
-                c1 = other.c1;
-                p1 = other.p1;
-                return *this;
-            }
+            Bezier<T> &operator= (const Bezier<T> &other);
 
             /** \brief Move assignment for Bezier
              *
              * \param Bezier &&<u>other</u>: The Bezier curve to move
              *
              */
-            Bezier<T> &operator= (Bezier<T> &&other) {
-                p0 = std::move(other.p0);
-                c0 = std::move(other.c0);
-                c1 = std::move(other.c1);
-                p1 = std::move(other.p1);
-                return *this;
-            }
+            Bezier<T> &operator= (Bezier<T> &&other);
 
             /** \brief Calculates the point on this Bezier curve at time <i>t</>
              *
@@ -101,34 +109,14 @@ namespace GenEx {
              * \return Vector point on this Bezier curve
              *
              */
-            VEC calculate_curve_point(float t) {
-                float tt  = t*t;
-                float ttt = tt*t;
-                float u   = 1.0f - t;
-                float uu  = u*u;
-                float uuu = uu*u;
-
-                VEC pt = ((T)(uuu) ) * p0;
-                pt += ( (T)(3.0 * uu * t) ) * c0;
-                pt += ( (T)(3.0 * u * tt) ) * c1;
-                pt += ( (T)(ttt) ) * p1;
-                return pt;
-            }
+            VEC calculate_curve_point(float t);
 
             /** \brief Returns how flat this Bezier curve is
              *
              * \return T How flat this curve is
              *
              */
-            T flatness() {
-                T ux = SDL_pow(3*c0[0] - 2*p0[0] - p1[0], 2);
-                T uy = SDL_pow(3*c0[1] - 2*p0[1] - p1[1], 2);
-                T vx = SDL_pow(3*c1[0] - 2*p1[0] - p0[0], 2);
-                T vy = SDL_pow(3*c1[1] - 2*p1[1] - p0[1], 2);
-                if (ux < vx) ux = vx;
-                if (uy < vy) uy = vy;
-                return ux + uy;
-            }
+            T flatness();
 
             /** \brief Splits this curve into two curves
              *
@@ -136,46 +124,18 @@ namespace GenEx {
              *        0.0 to split at start, 1.0 to split at end
              *
              */
-            void split(Bezier<T> *split_arr, T t = 0.5) {
-                Vector<2,T> p12  = GetMidpoint2D(p0,  c0,  t);
-                Vector<2,T> p23  = GetMidpoint2D(c0,  c1,  t);
-                Vector<2,T> p34  = GetMidpoint2D(p1,  c1,  t);
-                Vector<2,T> p123 = GetMidpoint2D(p12, p23, t);
-                Vector<2,T> p234 = GetMidpoint2D(p23, p34, t);
-                Vector<2,T> p1234= GetMidpoint2D(p123,p234,t);
+            void split(Bezier<T> *split_arr, T t = 0.5);
 
-                split_arr[0] = Bezier<T>(p0, p12, p123, p1234);
-                split_arr[1] = Bezier<T>(p1234, p234, p34, p1);
-            }
-
+            /** \brief Samples points on the curve to connect together as straight lines.
+             *
+             * \param std::vector<Vector<2,T>> &<u>point_vec</u>: Vector to populate with 2D points
+             * \param unsigned int <u><i>samples</i></u>: How many times to sample the image; set
+             *        <i>DEFAULT_SAMPLES</i> by default; if samples < 2, a recursive algorithm will
+             *        be used to determine the amount of samples
+             *
+             */
             void sample(std::vector< Vector<2,T> > &point_vec,
-                        unsigned int samples = DEFAULT_SAMPLES) {
-                // Valid number of samples
-                if (samples > 1) {
-                    for (float t = 0.0f; t <= 1.0f + (0.5f / samples); t += 1.0f / samples) {
-                        if (t > 1.f) t = 1.f;
-                        point_vec.emplace_back(calculate_curve_point(t));
-                    }
-                }
-                // Otherwise use recursive sampling algorithm
-                else {
-                    if (flatness() < RECURSE_THRESHOLD) {
-                        if (point_vec.size() > 1) {
-                            if (p0 != *(point_vec.end()-1))
-                                point_vec.emplace_back(p0);
-                        } else {
-                            point_vec.emplace_back(p0);
-                        }
-                        point_vec.emplace_back(p1);
-                    }
-                    else {
-                        Bezier<T> curves[2];
-                        split(curves);
-                        curves[0].sample(point_vec, 0);
-                        curves[1].sample(point_vec, 0);
-                    }
-                }
-            }
+                        unsigned int samples = DEFAULT_SAMPLES);
         };
 
 // --- BEZIER CURVE ALIASES -----------------------------------------------------------------------
@@ -191,15 +151,6 @@ namespace GenEx {
         /** \brief BezierCurve that uses Vector2L as the internal Vector type
          */
         typedef Bezier<long double> BezierCurveL;
-
-// --- BEZIER PATH DECLARATION --------------------------------------------------------------------
-
-        template <typename T>
-        class Path;
-
-// --- BEZIER HELPER FUNCTIONS --------------------------------------------------------------------
-
-        // <placeholder>
 
 // --- PATH CLASS ---------------------------------------------------------------------------------
 
@@ -217,38 +168,43 @@ namespace GenEx {
         public:
             /** \brief Constructs a new Path.
              */
-            Path() { }
+            Path();
 
-            Path(std::initializer_list< std::tuple< Bezier<T>, int> > initlist) {
-                for (auto &entry : initlist) {
-                    Bezier<T> c;
-                    int s;
-                    std::tie(c, s) = entry;
-                    mCurves.emplace_back(c);
-                    mSamples.emplace_back(s);
-                }
-            }
+            /** \brief Constructs a new path from a list of Bezier curves & sample counts.
+             *
+             * \param <u>initlist</u>: An initializer list containing tuples of Bezier curves
+             *        and integers representing the amount of samples to take of each corresponding
+             *        curve.
+             *
+             */
+            Path(std::initializer_list< std::tuple< Bezier<T>, int> > initlist);
 
-            Path(std::initializer_list< Bezier<T> > blist, std::initializer_list<int> slist) {
-                if (blist.size() != slist.size()) {
-                    throw Error("blist & slist parameters for Path<T> constructor must " +
-                                std::string("be the same size"));
-                }
-                for (size_t i = 0; i < blist.size(); i++) {
-                    mCurves.emplace_back(*(blist.begin()+i));
-                    mSamples.emplace_back(*(slist.begin()+i));
-                }
-            }
+            /** \brief Constructs a new path from a list of Bezier curves & a list of sample
+             *        counts.
+             *
+             * \param <u>blist</u>: An initializer list containing Bezier curves
+             * \param <u>slist</u>: An initializer list containing sample counts for each curve
+             *
+             */
+            Path(std::initializer_list< Bezier<T> > blist, std::initializer_list<int> slist);
+
+            /** \brief Constructs a new path from the contents of another.
+             *
+             * \param Path &<u>other</u>: The path to derive from
+             *
+             */
+            Path(const Path &other);
+
+            /** \brief Constructs a new path from the contents of another.
+             *
+             * \param Path &<u>other</u>: The path to derive from
+             *
+             */
+            Path(Path &&other);
 
             /** \brief Destructor for Path.
              */
-            ~Path() {
-                mCurves.clear();
-                mSamples.clear();
-            }
-
-            std::vector< Bezier<T> > get_curves() const { return mCurves; }
-            std::vector<int> get_sample_counts() const { return mSamples; }
+            ~Path();
 
             /** \brief Adds a new curve to this path.
              *
@@ -257,10 +213,7 @@ namespace GenEx {
              *        being drawn.
              *
              */
-            void add_curve(Bezier<T> curve, int samples = DEFAULT_SAMPLES) {
-                mCurves.emplace_back(curve);
-                mSamples.emplace_back(samples);
-            }
+            void add_curve(Bezier<T> curve, int samples = DEFAULT_SAMPLES);
 
             /** \brief Places samples of this path into a given vector.
              *
@@ -268,10 +221,7 @@ namespace GenEx {
              *        the sampled points of this path to
              *
              */
-            void sample(std::vector< Vector<2,T> > &sampled_path) {
-                for (size_t i = 0; i < mCurves.size(); i++)
-                    mCurves[i].sample(sampled_path, mSamples[i]);
-            }
+            void sample(std::vector< Vector<2,T> > &sampled_path);
         };
 
 // --- BEZIER PATH ALIASES ------------------------------------------------------------------------

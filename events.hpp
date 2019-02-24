@@ -1,3 +1,30 @@
+/**
+ * \file events.hpp
+ *
+ * \author Simon Struthers <snstruthers@gmail.com>
+ * \version pre_dev v0.1.0
+ *
+ * \section LICENSE
+ * GenEx (short for General Executor) - window manager and runtime environment.
+ * Copyright (C) 2019 | The GenEx Project
+ *
+ * This file is part of GenEx.
+ *
+ * GenEx is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License version 2 as published by the Free Software Foundation.
+ *
+ * GenEx is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You should have received a copy of the GNU General Public License version 2 along with GenEx.
+ * If not, see http://www.gnu.org/licenses.
+ *
+ * \section DESCRIPTION
+ * The header file for event typedefs and default event handler functions.
+ *
+ */
+
 #ifndef EVENTS_HPP
 #define EVENTS_HPP
 
@@ -17,6 +44,10 @@ namespace GenEx {
          */
         typedef void (*DestroyEvent)(GenEx::Object*);
 
+        /** \brief Typedef for an event handler for rendering objects
+         */
+        typedef void (*RenderEvent)(GenEx::Object*, SDL_Renderer*, int, int, int);
+
         /** \brief Typedef for an event handler for when sprites/graphics are updated
          */
         typedef bool (*UpdateEvent)(GenEx::Object*, double);
@@ -34,11 +65,11 @@ namespace GenEx {
 
         /** \brief Typedef for an event handler for an SDL_KEYDOWN event
          */
-        typedef bool (*KeyDownEvent)(GenEx::Object*, SDL_Keycode, SDL_Scancode, Uint8);
+        typedef bool (*KeyDownEvent)(GenEx::Object*, SDL_Keycode, SDL_Scancode, Uint16, Uint8);
 
         /** \brief Typedef for an event handler for an SDL_KEYUP event
          */
-        typedef bool (*KeyUpEvent)(GenEx::Object*, SDL_Keycode, SDL_Scancode, Uint8);
+        typedef bool (*KeyUpEvent)(GenEx::Object*, SDL_Keycode, SDL_Scancode, Uint16, Uint8);
 
         /** \brief Typedef for an event handler for an SDL_TEXTEDITING event
          */
@@ -173,14 +204,26 @@ namespace GenEx {
          * \param GenEx::Object *<u>obj</u>: Pointer to the object to initialize
          *
          */
-        void InitEventHandler(GenEx::Object *obj) { }
+        inline void InitEventHandler(GenEx::Object *obj) { }
 
         /** \brief The default event handler for when objects are to be destroyed.
          *
          * \param GenEx::Object *<u>obj</u>: Pointer to the object to destroy
          *
          */
-        void DestroyEventHandler(GenEx::Object *obj) { }
+        inline void DestroyEventHandler(GenEx::Object *obj) { }
+
+        /** \brief The default event handler for when objects are to be rendered.
+         *
+         * \param GenEx::Object *<u>obj</u>: Pointer to the object to destroy
+         * \param SDL_Renderer *<u>target</u>: Pointer to a render target
+         * \param int <u>offset_x</u>: Horizontal offset
+         * \param int <u>offset_y</u>: Vertical offset
+         * \param int <u>offset_z</u>: Depth offset
+         *
+         */
+        inline void RenderEventHandler(GenEx::Object *obj, SDL_Renderer *target,
+                                       int offset_x, int offset_y, int offset_z) { }
 
         /** \brief A minimal event handler for when objects need to be updated.
          *
@@ -189,7 +232,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool UpdateEventHandler(GenEx::Object *obj, double elapsed) {
+        inline bool UpdateEventHandler(GenEx::Object *obj, double elapsed) {
             return true;
         }
 
@@ -201,7 +244,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool TargetResetEventHandler(GenEx::Object *obj) {
+        inline bool TargetResetEventHandler(GenEx::Object *obj) {
             return true;
         }
 
@@ -214,7 +257,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool WindowEventHandler(GenEx::Object *obj, Uint8 event, Sint32 data1, Sint32 data2) {
+        inline bool WindowEventHandler(GenEx::Object *obj, Uint8 event, Sint32 data1,
+                                       Sint32 data2) {
             return true;
         }
 
@@ -227,12 +271,13 @@ namespace GenEx {
          * \param SDL_Keycode <u>key</u>: The keycode/key that was pressed
          * \param SDL_Scancode <u>scancode</u>: The scancode/location on the keyboard that
          *        was pressed
+         * \param Uint16 <u>mod</u>: Active key modifiers
          * \param Uint8 <u>repeat</u>: How many times the key was pressed
          * \return bool TRUE to continue running the application
          *
          */
-        bool KeyDownEventHandler(GenEx::Object *obj, SDL_Keycode key, SDL_Scancode scancode,
-                                 Uint8 repeat) {
+        inline bool KeyDownEventHandler(GenEx::Object *obj, SDL_Keycode key, SDL_Scancode scancode,
+                                        Uint16 mod, Uint8 repeat) {
             return true;
         }
 
@@ -242,12 +287,13 @@ namespace GenEx {
          * \param SDL_Keycode <u>key</u>: The keycode/key that was released
          * \param SDL_Scancode <u>scancode</u>: The scancode/location on the keyboard that
          *        was released
+         * \param Uint16 <u>mod</u>: Active key modifiers
          * \param Uint8 <u>repeat</u>: How many times the key was pressed
          * \return bool TRUE to continue running the application
          *
          */
-        bool KeyUpEventHandler(GenEx::Object *obj, SDL_Keycode key, SDL_Scancode scancode,
-                               Uint8 repeat) {
+        inline bool KeyUpEventHandler(GenEx::Object *obj, SDL_Keycode key, SDL_Scancode scancode,
+                                      Uint16 mod, Uint8 repeat) {
             return true;
         }
 
@@ -261,8 +307,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool TextEditingEventHandler(GenEx::Object *obj, char text[SDL_TEXTEDITINGEVENT_TEXT_SIZE],
-                                     Sint32 start, Sint32 length) {
+        inline bool TextEditingEventHandler(GenEx::Object *obj,
+                                            char text[SDL_TEXTEDITINGEVENT_TEXT_SIZE],
+                                            Sint32 start, Sint32 length) {
             return true;
         }
 
@@ -274,7 +321,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool TextInputEventHandler(GenEx::Object *obj, char text[SDL_TEXTINPUTEVENT_TEXT_SIZE]) {
+        inline bool TextInputEventHandler(GenEx::Object *obj,
+                                          char text[SDL_TEXTINPUTEVENT_TEXT_SIZE]) {
             return true;
         }
 
@@ -288,7 +336,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool ClipboardUpdateEventHandler(GenEx::Object *obj, char text[]) {
+        inline bool ClipboardUpdateEventHandler(GenEx::Object *obj, char text[]) {
             return true;
         }
 
@@ -300,7 +348,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool DropFileEventHandler(GenEx::Object *obj, std::string filename) {
+        inline bool DropFileEventHandler(GenEx::Object *obj, std::string filename) {
             return true;
         }
 
@@ -312,7 +360,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool DropTextEventHandler(GenEx::Object *obj, char text[]) {
+        inline bool DropTextEventHandler(GenEx::Object *obj, char text[]) {
             return true;
         }
 
@@ -323,7 +371,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool DropBeginEventHandler(GenEx::Object *obj) {
+        inline bool DropBeginEventHandler(GenEx::Object *obj) {
             return true;
         }
 
@@ -334,7 +382,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool DropCompleteEventHandler(GenEx::Object *obj) {
+        inline bool DropCompleteEventHandler(GenEx::Object *obj) {
             return true;
         }
 
@@ -353,8 +401,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool MouseButtonDownEventHandler(GenEx::Object *obj, Sint32 x, Sint32 y, Uint8 button,
-                                         Uint8 clicks, Uint32 which) {
+        inline bool MouseButtonDownEventHandler(GenEx::Object *obj, Sint32 x, Sint32 y,
+                                                Uint8 button, Uint8 clicks, Uint32 which) {
             return true;
         }
 
@@ -371,8 +419,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool MouseButtonUpEventHandler(GenEx::Object *obj, Sint32 x, Sint32 y, Uint8 button,
-                                       Uint8 clicks, Uint32 which) {
+        inline bool MouseButtonUpEventHandler(GenEx::Object *obj, Sint32 x, Sint32 y, Uint8 button,
+                                              Uint8 clicks, Uint32 which) {
             return true;
         }
 
@@ -390,8 +438,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool MouseMotionEventHandler(GenEx::Object *obj, Sint32 x, Sint32 y, Sint32 xrel,
-                                     Sint32 yrel, bool buttons[5], Uint32 which) {
+        inline bool MouseMotionEventHandler(GenEx::Object *obj, Sint32 x, Sint32 y, Sint32 xrel,
+                                            Sint32 yrel, bool buttons[5], Uint32 which) {
             return true;
         }
 
@@ -407,8 +455,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool MouseWheelEventHandler(GenEx::Object *obj, bool flipped, Sint32 x, Sint32 y,
-                                    Uint32 which) {
+        inline bool MouseWheelEventHandler(GenEx::Object *obj, bool flipped, Sint32 x, Sint32 y,
+                                           Uint32 which) {
             return true;
         }
 
@@ -424,8 +472,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool JoystickAxisEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
-                                      Uint8 axis, Sint16 value) {
+        inline bool JoystickAxisEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
+                                             Uint8 axis, Sint16 value) {
             return true;
         }
 
@@ -440,8 +488,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool JoystickTrackballEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
-                                           Uint8 ball, Sint16 x, Sint16 y) {
+        inline bool JoystickTrackballEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
+                                                  Uint8 ball, Sint16 x, Sint16 y) {
             return true;
         }
 
@@ -455,8 +503,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool JoystickHatEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id, Uint8 hat,
-                                     Uint8 value) {
+        inline bool JoystickHatEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
+                                            Uint8 hat, Uint8 value) {
             return true;
         }
 
@@ -469,8 +517,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool JoystickButtonDownEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
-                                            Uint8 button) {
+        inline bool JoystickButtonDownEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
+                                                   Uint8 button) {
             return true;
         }
 
@@ -483,8 +531,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool JoystickButtonUpEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
-                                          Uint8 button) {
+        inline bool JoystickButtonUpEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
+                                                 Uint8 button) {
             return true;
         }
 
@@ -500,8 +548,8 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool ControllerAxisEventHandler(GenEx::Object *obj, SDL_JoystickID controller_id,
-                                        Uint8 axis, Sint16 value) {
+        inline bool ControllerAxisEventHandler(GenEx::Object *obj, SDL_JoystickID controller_id,
+                                               Uint8 axis, Sint16 value) {
             return true;
         }
 
@@ -514,8 +562,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool ControllerButtonDownEventHandler(GenEx::Object *obj, SDL_JoystickID controller_id,
-                                              Uint8 button) {
+        inline bool ControllerButtonDownEventHandler(GenEx::Object *obj,
+                                                     SDL_JoystickID controller_id,
+                                                     Uint8 button) {
             return true;
         }
 
@@ -528,8 +577,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool ControllerButtonUpEventHandler(GenEx::Object *obj, SDL_JoystickID joystick_id,
-                                            Uint8 button) {
+        inline bool ControllerButtonUpEventHandler(GenEx::Object *obj,
+                                                   SDL_JoystickID joystick_id,
+                                                   Uint8 button) {
             return true;
         }
 
@@ -550,8 +600,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool FingerDownEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
-                                    SDL_FingerID finger_id, float x, float y, float pressure) {
+        inline bool FingerDownEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
+                                           SDL_FingerID finger_id, float x, float y,
+                                           float pressure) {
             return true;
         }
 
@@ -570,8 +621,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool FingerUpEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
-                                    SDL_FingerID finger_id, float x, float y, float pressure) {
+        inline bool FingerUpEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
+                                         SDL_FingerID finger_id, float x, float y,
+                                         float pressure) {
             return true;
         }
 
@@ -594,9 +646,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool FingerMotionEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
-                                    SDL_FingerID finger_id, float x, float y,
-                                    float dx, float dy, float pressure) {
+        inline bool FingerMotionEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
+                                             SDL_FingerID finger_id, float x, float y,
+                                             float dx, float dy, float pressure) {
             return true;
         }
 
@@ -612,9 +664,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool RecordGestureEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
-                                       SDL_GestureID gesture_id, Uint32 num_fingers,
-                                       float x, float y) {
+        inline bool RecordGestureEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
+                                              SDL_GestureID gesture_id, Uint32 num_fingers,
+                                              float x, float y) {
             return true;
         }
 
@@ -632,9 +684,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool PerformGestureEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
-                                       SDL_GestureID gesture_id, Uint32 num_fingers,
-                                       float x, float y, float error) {
+        inline bool PerformGestureEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
+                                              SDL_GestureID gesture_id, Uint32 num_fingers,
+                                              float x, float y, float error) {
             return true;
         }
 
@@ -651,8 +703,9 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool MultiGestureEventHandler(GenEx::Object *obj, SDL_TouchID touch_id, Uint16 num_fingers,
-                                      float x, float y, float d_theta, float d_dist) {
+        inline bool MultiGestureEventHandler(GenEx::Object *obj, SDL_TouchID touch_id,
+                                             Uint16 num_fingers,float x, float y,
+                                             float d_theta, float d_dist) {
             return true;
         }
 
@@ -667,7 +720,7 @@ namespace GenEx {
          * \return bool TRUE to continue running the application
          *
          */
-        bool UserEventHandler(GenEx::Object *obj, Sint32 code, void *data1, void *data2) {
+        inline bool UserEventHandler(GenEx::Object *obj, Sint32 code, void *data1, void *data2) {
             return true;
         }
 
@@ -684,6 +737,14 @@ namespace GenEx {
              * \param GenEx::object *<u>obj</u>
              */
             DestroyEvent destroy;
+            /** Render event
+             * \param GenEx::Object *<u>obj</u>
+             * \param SDL_Renderer *<u>renderer</u>
+             * \param int <u>offset_x</u>
+             * \param int <u>offset_y</u>
+             * \param int <u>offset_z</u>
+             */
+            RenderEvent  render;
             /** Update event
              * \param GenEx::Object *<u>obj</u>
              * \param double elapsed
@@ -706,6 +767,7 @@ namespace GenEx {
              * \param GenEx::Object *<u>obj</u>
              * \param SDL_Keycode <u>key</u>
              * \param SDL_Scancode <u>scancode</u>
+             * \param Uint16 <u>mod</u>
              * \param Uint8 <u>repeat</u>
              */
             KeyDownEvent     keydown;
@@ -713,6 +775,7 @@ namespace GenEx {
              * \param GenEx::Object *<u>obj</u>
              * \param SDL_Keycode <u>key</u>
              * \param SDL_Scancode <u>scancode</u>
+             * \param Uint16 <u>mod</u>
              * \param Uint8 <u>repeat</u>
              */
             KeyUpEvent       keyup;
@@ -918,51 +981,7 @@ namespace GenEx {
          * \return EventHandlers Struct containing the default GenEx event handlers
          *
          */
-        EventHandlers GenerateEventHandlerStruct() {
-            return {
-              InitEventHandler,
-              DestroyEventHandler,
-              UpdateEventHandler,
-              WindowEventHandler,
-              TargetResetEventHandler,
-
-              KeyDownEventHandler,
-              KeyUpEventHandler,
-              TextEditingEventHandler,
-              TextInputEventHandler,
-
-              MouseButtonDownEventHandler,
-              MouseButtonUpEventHandler,
-              MouseMotionEventHandler,
-              MouseWheelEventHandler,
-
-              ClipboardUpdateEventHandler,
-              DropFileEventHandler,
-              DropTextEventHandler,
-              DropBeginEventHandler,
-              DropCompleteEventHandler,
-
-              JoystickAxisEventHandler,
-              JoystickTrackballEventHandler,
-              JoystickHatEventHandler,
-              JoystickButtonDownEventHandler,
-              JoystickButtonUpEventHandler,
-
-              ControllerAxisEventHandler,
-              ControllerButtonDownEventHandler,
-              ControllerButtonUpEventHandler,
-
-              FingerDownEventHandler,
-              FingerUpEventHandler,
-              FingerMotionEventHandler,
-              RecordGestureEventHandler,
-              PerformGestureEventHandler,
-              MultiGestureEventHandler,
-
-              UserEventHandler
-            };
-        }
-
+        EventHandlers GenerateEventHandlerStruct();
     }
 }
 

@@ -41,17 +41,27 @@
 			<Add directory="lib" />
 		</Linker>
 		<Unit filename="assets.hpp" />
+		<Unit filename="base.cpp" />
 		<Unit filename="base.hpp" />
+		<Unit filename="debug.cpp" />
 		<Unit filename="debug.hpp" />
+		<Unit filename="events.cpp" />
 		<Unit filename="events.hpp" />
 		<Unit filename="genex.h" />
 		<Unit filename="graphics.hpp" />
+		<Unit filename="graphics/draw.hpp" />
+		<Unit filename="graphics/window.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="math.cpp" />
 		<Unit filename="math.hpp" />
 		<Unit filename="math/bezier.hpp" />
+		<Unit filename="math/transform.hpp" />
 		<Unit filename="math/vector.hpp" />
+		<Unit filename="object.cpp" />
 		<Unit filename="object.hpp" />
+		<Unit filename="time.cpp" />
 		<Unit filename="time.hpp" />
+		<Unit filename="util.cpp" />
 		<Unit filename="util.hpp" />
 		<Extensions>
 			<code_completion />

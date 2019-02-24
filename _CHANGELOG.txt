@@ -1,0 +1,58 @@
+GenEx Changelog
+
+[pre_dev]
+  - v0.0.0
+   "initial commit"
+    + Rudimentary windowing system
+    + Mathematical Vectors
+    + Bezier Curves & Paths
+    + Prototype event handler functions & typedefs
+    + Debugging functions for printing out events
+    + Utility functions for string manipulation
+    + Timing functions & simplistic Timer class
+    
+  - v0.0.1
+   "Added base Object class & new event handlers"
+    + General Object class
+    + Proper event handler functions & typedefs
+    + Cleaned up event handler function in main.cpp
+    
+  - v0.0.2
+   "Added Layer class & proper move constructors/assignment operators"
+    + Layer class (holds collection of Objects)
+    + Better documentation for EventHandlers struct
+    + Cleaned up move & copy constructors/assignments
+    + Regex-related utility functions
+  
+  - v0.0.3
+   "Custom event handlers for Layers"
+    + Layers can now be constructed with non-default event handlers
+    
+  - v0.0.4
+   "Fixed some bugs I missed in the Vector class x/"
+    + Vector-related bugfixes & correction of various oversights
+    
+  - v0.1.0 (CURRENT)
+   "Window classes, separation of header & source files, and multi-threading, oh my! (yeah, this is a big one)"
+    + Added a changelog file
+    + Separated source code from header files (SO INFURIATING!!)
+      + Added licensing information to the top of each header/source file
+    + Window class (a collection of Objects that contains an SDL_Window & SDL_Renderer inside
+    + Functions to allow for multi-threaded Windowing if desired
+      ~ The Window class itself doesn't have any multi-threading-specific code, meaning one could hypothetically
+        implement a way to run multiple Windows without multi-threading if they so wanted
+    + Replaced the rudimentary windowing system with a multi-threaded one
+      + Event handling function replaced with event polling function
+      + Added an event type specifically for creating new windows with this system
+        ~ Has desired framerate as parameter to make use of condition_variables for optimization
+    + Added GetTime() as a complement to GetSecs(); measures time since program start instead of current time
+      + Replaced all instances of GetSecs() with GetTime() in the codebase
+    + Added RenderEvents for Objects
+    + Added mathematical transformation functions for SDL_Points, 2D Vectors, and 3D Vectors
+    + Added RenderLine() for antialiasing support
+      ~ Moved image/shape rendering function declarations to graphics/draw.hpp
+    ~ Made the codebase more consistent with internal formatting rules
+    ~ Changed certain filenames for convenience when sorted
+    - Removed DEBUGGING flag & related code
+    - Removed the useless Timer class
+    - Removed unnecessary include files
